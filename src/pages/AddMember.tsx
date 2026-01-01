@@ -1,19 +1,18 @@
 import { useState } from "react";
 import type { Member } from "../types/member";
 import { useMembers } from "../context/MembersContext";
-
+import { membershipPlans } from "../data/membershipPlans";
 
 export default function AddMember() {
+  const { addMember } = useMembers();
+
   const [formData, setFormData] = useState<Omit<Member, "id">>({
     name: "",
     phone: "",
-    plan: "",
+    planId: "",
     status: "active",
     joinDate: "",
   });
-
-  const { addMember } = useMembers();
-
 
   const [error, setError] = useState("");
 
@@ -27,33 +26,34 @@ export default function AddMember() {
   };
 
   const handleSubmit = (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!formData.name || !formData.phone || !formData.plan) {
-    setError("Please fill in all required fields.");
-    return;
-  }
+    if (!formData.name || !formData.phone || !formData.planId) {
+      setError("Please fill in all required fields.");
+      return;
+    }
 
-  addMember(formData);
-  setError("");
-  alert("Member added successfully");
+    addMember(formData);
+    setError("");
+    alert("Member added successfully");
 
-  setFormData({
-    name: "",
-    phone: "",
-    plan: "",
-    status: "active",
-    joinDate: "",
-  });
-};
-
+    setFormData({
+      name: "",
+      phone: "",
+      planId: "",
+      status: "active",
+      joinDate: "",
+    });
+  };
 
   return (
     <div className="max-w-xl bg-white p-6 rounded-lg shadow">
       <h1 className="text-2xl font-bold mb-4">Add Member</h1>
 
       {error && (
-        <p className="mb-4 text-red-600 bg-red-50 p-2 rounded">{error}</p>
+        <p className="mb-4 text-red-600 bg-red-50 p-2 rounded">
+          {error}
+        </p>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -74,16 +74,17 @@ export default function AddMember() {
         />
 
         <select
-          name="plan"
+          name="planId"
           className="w-full border p-2 rounded"
-          value={formData.plan}
+          value={formData.planId}
           onChange={handleChange}
         >
           <option value="">Select Plan</option>
-          <option value="Monthly">Monthly</option>
-          <option value="Quarterly">Quarterly</option>
-          <option value="SemiAnnual">SemiAnnual</option>
-          <option value="Annual">Annual</option>
+          {membershipPlans.map((plan) => (
+            <option key={plan.id} value={plan.id}>
+              {plan.name}
+            </option>
+          ))}
         </select>
 
         <select

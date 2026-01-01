@@ -5,6 +5,7 @@ import { mockMembers } from "../data/mockMembers";
 interface MembersContextType {
   members: Member[];
   addMember: (member: Omit<Member, "id">) => void;
+
 }
 
 const MembersContext = createContext<MembersContextType | undefined>(undefined);

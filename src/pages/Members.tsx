@@ -1,7 +1,12 @@
 import { useMembers } from "../context/MembersContext";
+import { membershipPlans } from "../data/membershipPlans";
+
 
 export default function Members() {
   const { members } = useMembers();
+  const getPlanName = (planId: string) =>
+  membershipPlans.find((p) => p.id === planId)?.name || "Unknown";
+
 
   return (
     <div className="p-6">
@@ -22,7 +27,8 @@ export default function Members() {
               <tr key={member.id} className="border-t">
                 <td className="p-3">{member.name}</td>
                 <td className="p-3">{member.phone}</td>
-                <td className="p-3">{member.plan}</td>
+                <td className="p-3">{getPlanName(member.planId)}</td>
+
                 <td className="p-3">
                   <span
                     className={`px-2 py-1 rounded text-sm ${
