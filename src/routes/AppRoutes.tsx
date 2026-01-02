@@ -5,6 +5,8 @@ import Members from "../pages/Members";
 import AddMember from "../pages/AddMember";
 import Memberships from "../pages/Memberships";
 import Payments from "../pages/Payments";
+import MemberProfile from "../pages/MemberProfile";
+
 
 export default function AppRoutes() {
   return (
@@ -15,6 +17,9 @@ export default function AppRoutes() {
         <Route path="/add-member" element={<AddMember />} />
         <Route path="/memberships" element={<Memberships />} />
         <Route path="/payments" element={<Payments />} />
+        <Route path="/members/:id" element={<MemberProfile />} />
+
+
       </Route>
     </Routes>
   );

@@ -1,5 +1,6 @@
 import { useMembers } from "../context/MembersContext";
 import { membershipPlans } from "../data/membershipPlans";
+import { Link } from "react-router-dom";
 
 
 
@@ -31,7 +32,12 @@ const { members, renewMembership } = useMembers();
           <tbody>
             {members.map((member) => (
               <tr key={member.id} className="border-t">
-                <td className="p-3">{member.name}</td>
+                <td className="p-3"><Link
+    to={`/members/${member.id}`} className="text-blue-600 hover:underline"
+  >
+    {member.name}
+  </Link>
+</td>
                 <td className="p-3">{member.phone}</td>
                 <td className="p-3">{getPlanName(member.planId)}</td>
                 <td className="p-3">{member.expiryDate}</td>
