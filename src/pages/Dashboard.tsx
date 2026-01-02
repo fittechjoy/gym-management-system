@@ -5,10 +5,12 @@ export default function Dashboard() {
   const { members } = useMembers();
 
   const totalMembers = members.length;
+
   const activeMembers = members.filter(
     (member) => member.status === "active"
   ).length;
-  const inactiveMembers = members.filter(
+
+  const expiredMembers = members.filter(
     (member) => member.status === "inactive"
   ).length;
 
@@ -19,7 +21,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         <StatCard label="Total Members" value={totalMembers} />
         <StatCard label="Active Members" value={activeMembers} />
-        <StatCard label="Inactive Members" value={inactiveMembers} />
+        <StatCard label="Expired Members" value={expiredMembers} />
       </div>
     </div>
   );
