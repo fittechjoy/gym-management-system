@@ -6,13 +6,16 @@ import { membershipPlans } from "../data/membershipPlans";
 export default function AddMember() {
   const { addMember } = useMembers();
 
-  const [formData, setFormData] = useState<Omit<Member, "id">>({
-    name: "",
-    phone: "",
-    planId: "",
-    status: "active",
-    joinDate: "",
-  });
+  const [formData, setFormData] = useState<
+  Omit<Member, "id" | "expiryDate">
+>({
+  name: "",
+  phone: "",
+  planId: "",
+  status: "active",
+  joinDate: "",
+});
+
 
   const [error, setError] = useState("");
 

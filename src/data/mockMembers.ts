@@ -8,6 +8,7 @@ export const mockMembers: Member[] = [
     planId: "monthly",
     status: "active",
     joinDate: "2025-01-01",
+    expiryDate: "2025-02-01",
   },
   {
     id: "2",
@@ -15,6 +16,7 @@ export const mockMembers: Member[] = [
     phone: "0712345678",
     planId: "annual",
     status: "inactive",
-    joinDate: "2024-11-15",
+    joinDate: "2024-01-01",
+    expiryDate: "2025-01-01",
   },
 ];

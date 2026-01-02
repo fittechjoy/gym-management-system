@@ -5,4 +5,5 @@ export interface Member {
   planId: string;
   status: "active" | "inactive";
   joinDate: string;
+  expiryDate: string;
 }

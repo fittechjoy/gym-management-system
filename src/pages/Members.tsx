@@ -20,6 +20,8 @@ export default function Members() {
               <th className="p-3">Phone</th>
               <th className="p-3">Plan</th>
               <th className="p-3">Status</th>
+              <th className="p-3">Expiry</th>
+
             </tr>
           </thead>
           <tbody>
@@ -28,6 +30,8 @@ export default function Members() {
                 <td className="p-3">{member.name}</td>
                 <td className="p-3">{member.phone}</td>
                 <td className="p-3">{getPlanName(member.planId)}</td>
+                <td className="p-3">{member.expiryDate}</td>
+
 
                 <td className="p-3">
                   <span
