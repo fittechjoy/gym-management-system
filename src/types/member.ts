@@ -6,4 +6,7 @@ export interface Member {
   status: "active" | "inactive";
   joinDate: string;
   expiryDate: string;
+
+  // derived (not stored)
+  daysLeft?: number;
 }

@@ -3,7 +3,7 @@ import type { Member } from "../types/member";
 import type { Payment } from "../types/payment";
 import { mockMembers } from "../data/mockMembers";
 import { membershipPlans } from "../data/membershipPlans";
-import { isExpired } from "../utils/dateUtils";
+import { isExpired, daysUntilExpiry } from "../utils/dateUtils";
 
 /* ------------------ Types ------------------ */
 
@@ -95,10 +95,24 @@ export function MembersProvider({
     setPayments((prev) => [...prev, payment]);
   };
 
-  const membersWithStatus: Member[] = members.map((member) => ({
-    ...member,
-    status: isExpired(member.expiryDate) ? "inactive" : "active",
-  }));
+  /* -------- Derived members (status + daysLeft) -------- */
+
+  const membersWithStatus: Member[] = members.map((member) => {
+    if (isExpired(member.expiryDate)) {
+      return {
+        ...member,
+        status: "inactive",
+      };
+    }
+
+    const daysLeft = daysUntilExpiry(member.expiryDate);
+
+    return {
+      ...member,
+      status: "active",
+      daysLeft,
+    };
+  });
 
   return (
     <MembersContext.Provider
