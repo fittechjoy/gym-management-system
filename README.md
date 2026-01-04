@@ -4,12 +4,10 @@ A frontend-first **Gym Management System** built with **React, TypeScript, and T
 
 This project was built as a **production-minded MVP**, focusing on clean architecture, scalability, and business logic rather than just UI.
 
----
 
 ## 🚀 Live Demo
 > _(Add link here once deployed – Vercel / Netlify)_
 
----
 
 ## 📌 Project Overview
 
@@ -23,7 +21,6 @@ The Gym Management System helps gym owners and staff:
 - Export reports for offline use
 - Control access based on user roles (Admin vs Staff)
 
----
 
 ## 🎯 Core Features
 
@@ -41,7 +38,6 @@ Supported plans:
 
 Each plan defines its duration and is used to automatically calculate expiry dates.
 
----
 
 ### ⏳ Expiry & Status Intelligence
 Membership status is **derived automatically**:
@@ -58,7 +54,6 @@ This logic powers:
 - Dashboard alerts
 - Renewal prioritization
 
----
 
 ### 💳 Renewals & Payments
 - One-click membership renewal
@@ -67,7 +62,6 @@ This logic powers:
 
 > Payments are frontend-managed but structured for easy backend integration.
 
----
 
 ### 📊 Dashboard
 Real-time operational metrics:
@@ -77,7 +71,6 @@ Real-time operational metrics:
 - Members expiring soon (7 days)
 - Urgent renewals (3 days)
 
----
 
 ### 🔍 Filters & Daily Operations
 Members can be filtered by:
@@ -88,7 +81,6 @@ Members can be filtered by:
 
 Designed to support **fast front-desk workflows**.
 
----
 
 ### 📤 CSV Export
 Export filtered member lists to CSV including:
@@ -101,7 +93,6 @@ Export filtered member lists to CSV including:
 
 Compatible with Excel and Google Sheets.
 
----
 
 ### 🔐 Role-Based Access Control
 Two roles are supported:
@@ -120,7 +111,6 @@ Access is enforced at:
 - Sidebar navigation
 - Route level
 
----
 
 ## 🧱 Tech Stack
 
@@ -131,7 +121,6 @@ Access is enforced at:
 - **Context API** (global state management)
 - **Vite** (development & build tool)
 
----
 
 ## 🗂️ Architecture Overview
 
@@ -150,7 +139,6 @@ Access is enforced at:
 
 This approach avoids prop drilling and keeps business logic centralized and scalable.
 
----
 
 ## 📦 Project Status
 
@@ -159,7 +147,6 @@ This approach avoids prop drilling and keeps business logic centralized and scal
 ✅ Portfolio-ready  
 ✅ Backend-ready data structures  
 
----
 
 ## 🔮 Future Improvements
 
@@ -171,10 +158,4 @@ This approach avoids prop drilling and keeps business logic centralized and scal
 - Audit logs
 - Multi-branch gym support
 
----
 
-## 🛠️ Getting Started
-
-### Install dependencies
-```bash
-npm install
