@@ -172,7 +172,8 @@ export default function Members() {
                           3000
                         )
                       }
-                      className="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                      className="bg-orange-500 text-white hover:bg-orange-600"
+
                     >
                       Renew
                     </button>

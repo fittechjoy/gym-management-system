@@ -13,7 +13,7 @@ export default function Sidebar() {
 
   return (
     <aside className="w-64 bg-slate-900 text-white min-h-screen p-6">
-      <h1 className="text-xl font-bold mb-8">Gym System</h1>
+      <h1 className="text-xl font-bold mb-8">Savannah Fitness Exchange</h1>
 
       <nav className="flex flex-col gap-4">
         {links.map((link) => (

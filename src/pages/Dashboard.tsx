@@ -25,7 +25,10 @@ const expiringUrgent = members.filter(
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
+     <h1 className="text-2xl font-bold mb-6">
+  Savannah Fitness Exchange Dashboard
+</h1>
+
 
       <div className="grid grid-cols-1 sm:grid-cols-5 gap-6">
   <StatCard label="Total Members" value={totalMembers} />

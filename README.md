@@ -1,73 +1,180 @@
-# React + TypeScript + Vite
+# 🏋️‍♀️ Gym Management System (Frontend MVP)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A frontend-first **Gym Management System** built with **React, TypeScript, and Tailwind CSS**, designed to handle real-world gym operations such as member management, membership tracking, renewals, payments, role-based access, and reporting.
 
-Currently, two official plugins are available:
+This project was built as a **production-minded MVP**, focusing on clean architecture, scalability, and business logic rather than just UI.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 🚀 Live Demo
+> _(Add link here once deployed – Vercel / Netlify)_
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 📌 Project Overview
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+The Gym Management System helps gym owners and staff:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Track members and their memberships
+- Automatically calculate membership expiry
+- Identify expiring and expired memberships
+- Renew memberships and record payments
+- View operational insights via a dashboard
+- Export reports for offline use
+- Control access based on user roles (Admin vs Staff)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🎯 Core Features
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 👥 Member Management
+- Add and view members
+- View individual member profiles
+- Track phone numbers, plans, join dates, and expiry dates
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 📅 Membership Plans
+Supported plans:
+- Monthly
+- Quarterly
+- Semi-Annual
+- Annual
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Each plan defines its duration and is used to automatically calculate expiry dates.
+
+---
+
+### ⏳ Expiry & Status Intelligence
+Membership status is **derived automatically**:
+
+- **Active** → Membership valid
+- **Expiring Soon**
+  - 7 days remaining (warning)
+  - 3 days remaining (urgent)
+- **Expired** → Membership lapsed
+
+This logic powers:
+- Status badges
+- Filters
+- Dashboard alerts
+- Renewal prioritization
+
+---
+
+### 💳 Renewals & Payments
+- One-click membership renewal
+- Automatically extends expiry date
+- Records payment history (amount, plan, date)
+
+> Payments are frontend-managed but structured for easy backend integration.
+
+---
+
+### 📊 Dashboard
+Real-time operational metrics:
+- Total members
+- Active members
+- Expired members
+- Members expiring soon (7 days)
+- Urgent renewals (3 days)
+
+---
+
+### 🔍 Filters & Daily Operations
+Members can be filtered by:
+- All
+- Active
+- Expired
+- Expiring soon
+
+Designed to support **fast front-desk workflows**.
+
+---
+
+### 📤 CSV Export
+Export filtered member lists to CSV including:
+- Name
+- Phone
+- Plan
+- Status
+- Expiry date
+- Days remaining
+
+Compatible with Excel and Google Sheets.
+
+---
+
+### 🔐 Role-Based Access Control
+Two roles are supported:
+
+#### Admin
+- Full access
+- Payments page
+- CSV exports
+
+#### Staff
+- Member management
+- Renewals only
+- No access to payments or exports
+
+Access is enforced at:
+- Sidebar navigation
+- Route level
+
+---
+
+## 🧱 Tech Stack
+
+- **React** (Hooks-based architecture)
+- **TypeScript** (strict typing & safety)
+- **Tailwind CSS** (UI styling)
+- **React Router** (routing & route protection)
+- **Context API** (global state management)
+- **Vite** (development & build tool)
+
+---
+
+## 🗂️ Architecture Overview
+
+### Context-Based State Management
+
+- **MembersContext**
+  - Members data
+  - Membership expiry logic
+  - Renewals
+  - Payment records
+  - Derived statuses
+
+- **AuthContext**
+  - Role-based access (Admin / Staff)
+  - UI & route protection
+
+This approach avoids prop drilling and keeps business logic centralized and scalable.
+
+---
+
+## 📦 Project Status
+
+✅ Functional MVP  
+✅ Production-ready frontend architecture  
+✅ Portfolio-ready  
+✅ Backend-ready data structures  
+
+---
+
+## 🔮 Future Improvements
+
+- Backend integration (Firebase / REST API)
+- Authentication (email/password, backend roles)
+- M-Pesa / Stripe payments
+- PDF report export
+- Email / in-app notifications for expiring memberships
+- Audit logs
+- Multi-branch gym support
+
+---
+
+## 🛠️ Getting Started
+
+### Install dependencies
+```bash
+npm install
