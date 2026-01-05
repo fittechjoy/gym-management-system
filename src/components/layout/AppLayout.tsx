@@ -6,7 +6,7 @@ export default function AppLayout() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-slate-900">
       {/* Sidebar (desktop) */}
       <div className="hidden md:block">
         <Sidebar />
@@ -25,8 +25,8 @@ export default function AppLayout() {
         </div>
       )}
 
-      {/* Main content */}
-      <div className="flex-1">
+      {/* Main content area */}
+      <div className="flex-1 flex flex-col">
         {/* Mobile header */}
         <header className="md:hidden flex items-center justify-between bg-white px-4 py-3 shadow">
           <button
@@ -40,7 +40,15 @@ export default function AppLayout() {
           </span>
         </header>
 
-        <main className="p-4 md:p-6">
+        {/* MAIN BACKGROUND LIVES HERE */}
+        <main
+          className="
+            flex-1
+            p-4 md:p-6
+            bg-gradient-to-br
+            from-orange-50 via-white to-white
+          "
+        >
           <Outlet />
         </main>
       </div>
