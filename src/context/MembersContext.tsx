@@ -1,45 +1,31 @@
 import React, { createContext, useContext, useState } from "react";
 import type { Member } from "../types/member";
 import type { Payment } from "../types/payment";
+import type { CheckIn } from "../types/checkin";
 import { mockMembers } from "../data/mockMembers";
 import { membershipPlans } from "../data/membershipPlans";
+import { pricing } from "../data/pricing";
 import { isExpired, daysUntilExpiry } from "../utils/dateUtils";
-import type { CheckIn } from "../types/checkin";
+import { getMembershipPrice } from "../utils/getMembershipPrice";
 
+/* ---------- Types ---------- */
 
-/* ------------------ Types ------------------ */
-
-interface MembersContextType {
-  members: Member[];
-  payments: Payment[];
-  addMember: (member: Omit<Member, "id" | "expiryDate">) => void;
-  renewMembership: (
-    memberId: string,
-    planId: string,
-    amount: number
-  ) => void;
-}
-
-/* ------------------ Context ------------------ */
-
-const MembersContext = createContext<MembersContextType | undefined>(
-  undefined
-);
 interface MembersContextType {
   members: Member[];
   payments: Payment[];
   checkIns: CheckIn[];
   addMember: (member: Omit<Member, "id" | "expiryDate">) => void;
-  renewMembership: (
-    memberId: string,
-    planId: string,
-    amount: number
-  ) => void;
+  renewMembership: (memberId: string, planId: Member["planId"]) => void;
   checkInMember: (memberId: string) => void;
 }
 
+/* ---------- Context ---------- */
 
-/* ------------------ Helpers ------------------ */
+const MembersContext = createContext<MembersContextType | undefined>(
+  undefined
+);
+
+/* ---------- Helpers ---------- */
 
 function calculateExpiryDate(joinDate: string, planId: string): string {
   const plan = membershipPlans.find((p) => p.id === planId);
@@ -47,11 +33,10 @@ function calculateExpiryDate(joinDate: string, planId: string): string {
 
   const date = new Date(joinDate);
   date.setMonth(date.getMonth() + plan.durationMonths);
-
   return date.toISOString().split("T")[0];
 }
 
-/* ------------------ Provider ------------------ */
+/* ---------- Provider ---------- */
 
 export function MembersProvider({
   children,
@@ -60,6 +45,7 @@ export function MembersProvider({
 }) {
   const [members, setMembers] = useState<Member[]>(mockMembers);
   const [payments, setPayments] = useState<Payment[]>([]);
+  const [checkIns, setCheckIns] = useState<CheckIn[]>([]);
 
   const addMember = (member: Omit<Member, "id" | "expiryDate">) => {
     const expiryDate = calculateExpiryDate(
@@ -67,109 +53,98 @@ export function MembersProvider({
       member.planId
     );
 
-    const newMember: Member = {
-      id: crypto.randomUUID(),
-      ...member,
-      expiryDate,
-    };
-
-    setMembers((prev) => [...prev, newMember]);
+    setMembers((prev) => [
+      ...prev,
+      {
+        id: crypto.randomUUID(),
+        ...member,
+        expiryDate,
+      },
+    ]);
   };
 
   const renewMembership = (
     memberId: string,
-    planId: string,
-    amount: number
+    planId: Member["planId"]
   ) => {
+    const member = members.find((m) => m.id === memberId);
+    if (!member) return;
+
+    const amount = getMembershipPrice(
+      planId,
+      member.memberType
+    );
+
     setMembers((prev) =>
-      prev.map((member) => {
-        if (member.id !== memberId) return member;
+      prev.map((m) => {
+        if (m.id !== memberId) return m;
 
-        const startDate = isExpired(member.expiryDate)
+        const startDate = isExpired(m.expiryDate)
           ? new Date().toISOString().split("T")[0]
-          : member.expiryDate;
-
-        const newExpiry = calculateExpiryDate(startDate, planId);
+          : m.expiryDate;
 
         return {
-          ...member,
+          ...m,
           planId,
-          expiryDate: newExpiry,
+          expiryDate: calculateExpiryDate(startDate, planId),
         };
       })
     );
 
-    const payment: Payment = {
-      id: crypto.randomUUID(),
-      memberId,
-      planId,
-      amount,
-      date: new Date().toISOString().split("T")[0],
-    };
-
-    setPayments((prev) => [...prev, payment]);
+    setPayments((prev) => [
+      ...prev,
+      {
+        id: crypto.randomUUID(),
+        memberId,
+        planId,
+        amount,
+        date: new Date().toISOString().split("T")[0],
+      },
+    ]);
   };
 
-  const [checkIns, setCheckIns] = useState<CheckIn[]>([]);
+  const checkInMember = (memberId: string) => {
+    const now = new Date();
 
-const checkInMember = (memberId: string) => {
-  const now = new Date();
-
-  const newCheckIn: CheckIn = {
-    id: crypto.randomUUID(),
-    memberId,
-    date: now.toISOString().split("T")[0],
-    time: now.toTimeString().slice(0, 5),
+    setCheckIns((prev) => [
+      {
+        id: crypto.randomUUID(),
+        memberId,
+        date: now.toISOString().split("T")[0],
+        time: now.toTimeString().slice(0, 5),
+      },
+      ...prev,
+    ]);
   };
 
-  setCheckIns((prev) => [newCheckIn, ...prev]);
-};
-
-
-  /* -------- Derived members (status + daysLeft) -------- */
-
-  const membersWithStatus: Member[] = members.map((member) => {
-    if (isExpired(member.expiryDate)) {
-      return {
-        ...member,
-        status: "inactive",
-      };
-    }
-
-    const daysLeft = daysUntilExpiry(member.expiryDate);
-
-    return {
-      ...member,
-      status: "active",
-      daysLeft,
-    };
-  });
+  const membersWithStatus: Member[] = members.map((m) => ({
+    ...m,
+    status: isExpired(m.expiryDate) ? "inactive" : "active",
+    daysLeft: daysUntilExpiry(m.expiryDate),
+  }));
 
   return (
     <MembersContext.Provider
-  value={{
-    members: membersWithStatus,
-    payments,
-    checkIns,
-    addMember,
-    renewMembership,
-    checkInMember,
-  }}
->
-
+      value={{
+        members: membersWithStatus,
+        payments,
+        checkIns,
+        addMember,
+        renewMembership,
+        checkInMember,
+      }}
+    >
       {children}
     </MembersContext.Provider>
   );
 }
 
-/* ------------------ Hook ------------------ */
+/* ---------- Hook ---------- */
 
 export function useMembers() {
-  const context = useContext(MembersContext);
-  if (!context) {
-    throw new Error(
-      "useMembers must be used within MembersProvider"
-    );
+  const ctx = useContext(MembersContext);
+  if (!ctx) {
+    throw new Error("useMembers must be used within MembersProvider");
   }
-  return context;
+  return ctx;
 }

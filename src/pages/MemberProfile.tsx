@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { useMembers } from "../context/MembersContext";
 import { membershipPlans } from "../data/membershipPlans";
 import { QRCodeSVG } from "qrcode.react";
-
+import { getMembershipPrice } from "../utils/getMembershipPrice";
 
 export default function MemberProfile() {
   const { id } = useParams<{ id: string }>();
@@ -18,12 +18,19 @@ export default function MemberProfile() {
     );
   }
 
+  /* ------------------ Derived Data ------------------ */
+
   const planName =
     membershipPlans.find((p) => p.id === member.planId)?.name ||
     "Unknown";
 
   const memberPayments = payments.filter(
     (p) => p.memberId === member.id
+  );
+
+  const renewalAmount = getMembershipPrice(
+    member.planId,
+    member.memberType
   );
 
   const statusBadge =
@@ -35,8 +42,16 @@ export default function MemberProfile() {
       ? "bg-yellow-100 text-yellow-700"
       : "bg-green-100 text-green-700";
 
-  // 🔑 QR should point to a real check-in URL
+  const statusLabel =
+    member.status === "inactive"
+      ? "Expired"
+      : member.daysLeft !== undefined && member.daysLeft <= 7
+      ? `Expires in ${member.daysLeft} days`
+      : "Active";
+
   const checkInUrl = `${window.location.origin}/checkin/${member.id}`;
+
+  /* ------------------ UI ------------------ */
 
   return (
     <div className="p-4 md:p-6 space-y-6">
@@ -46,19 +61,14 @@ export default function MemberProfile() {
 
       {/* Member Info */}
       <div className="bg-white rounded-lg shadow p-6 space-y-3">
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex items-center gap-2">
           <span className="text-sm text-gray-500">
             Status
           </span>
           <span
             className={`px-2 py-1 rounded text-sm ${statusBadge}`}
           >
-            {member.status === "inactive"
-              ? "Expired"
-              : member.daysLeft !== undefined &&
-                member.daysLeft <= 7
-              ? `Expires in ${member.daysLeft} days`
-              : "Active"}
+            {statusLabel}
           </span>
         </div>
 
@@ -71,6 +81,13 @@ export default function MemberProfile() {
         </p>
 
         <p>
+          <strong>Member Type:</strong>{" "}
+          {member.memberType === "tenant"
+            ? "Tenant"
+            : "Non Tenant"}
+        </p>
+
+        <p>
           <strong>Join Date:</strong> {member.joinDate}
         </p>
 
@@ -78,9 +95,16 @@ export default function MemberProfile() {
           <strong>Expiry Date:</strong> {member.expiryDate}
         </p>
 
+        <p className="text-sm text-gray-600">
+          Renewal Amount:{" "}
+          <span className="font-semibold text-green-600">
+            KES {renewalAmount.toLocaleString()}
+          </span>
+        </p>
+
         <button
           onClick={() =>
-            renewMembership(member.id, member.planId, 3000)
+            renewMembership(member.id, member.planId)
           }
           className="mt-4 bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 min-h-[44px]"
         >
@@ -100,8 +124,7 @@ export default function MemberProfile() {
             size={160}
             bgColor="#ffffff"
             fgColor="#000000"
-              />
-
+          />
         </div>
 
         <p className="text-sm text-gray-500 text-center">

@@ -1,6 +1,4 @@
-import type { MembershipPlan } from "../types/membership";
-
-export const membershipPlans: MembershipPlan[] = [
+export const membershipPlans = [
   {
     id: "monthly",
     name: "Monthly",
@@ -12,8 +10,8 @@ export const membershipPlans: MembershipPlan[] = [
     durationMonths: 3,
   },
   {
-    id: "semi-annual",
-    name: "Semi-Annual",
+    id: "semiAnnual",
+    name: "Semi Annual",
     durationMonths: 6,
   },
   {

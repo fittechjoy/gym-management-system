@@ -3,15 +3,15 @@ import { membershipPlans } from "../data/membershipPlans";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { exportToCSV } from "../utils/exportCsv";
+import type { PlanId } from "../types/member";
+
+type Filter = "all" | "active" | "expired" | "expiring";
 
 export default function Members() {
   const { members, renewMembership } = useMembers();
+  const [filter, setFilter] = useState<Filter>("all");
 
-  const [filter, setFilter] = useState<
-    "all" | "active" | "expired" | "expiring"
-  >("all");
-
-  const getPlanName = (planId: string) =>
+  const getPlanName = (planId: PlanId) =>
     membershipPlans.find((p) => p.id === planId)?.name || "Unknown";
 
   const filteredMembers = members.filter((member) => {
@@ -30,25 +30,27 @@ export default function Members() {
 
       {/* FILTERS + EXPORT */}
       <div className="flex flex-wrap items-center gap-2 mb-4">
-        {["all", "active", "expiring", "expired"].map((key) => (
-          <button
-            key={key}
-            onClick={() => setFilter(key as any)}
-            className={`px-3 py-2 rounded text-sm min-h-[40px] ${
-              filter === key
-                ? "bg-slate-900 text-white"
-                : "bg-gray-200"
-            }`}
-          >
-            {key === "all"
-              ? "All"
-              : key === "active"
-              ? "Active"
-              : key === "expiring"
-              ? "Expiring Soon"
-              : "Expired"}
-          </button>
-        ))}
+        {(["all", "active", "expiring", "expired"] as Filter[]).map(
+          (key) => (
+            <button
+              key={key}
+              onClick={() => setFilter(key)}
+              className={`px-3 py-2 rounded text-sm min-h-[40px] ${
+                filter === key
+                  ? "bg-slate-900 text-white"
+                  : "bg-gray-200"
+              }`}
+            >
+              {key === "all"
+                ? "All"
+                : key === "active"
+                ? "Active"
+                : key === "expiring"
+                ? "Expiring Soon"
+                : "Expired"}
+            </button>
+          )
+        )}
 
         <button
           onClick={() =>
@@ -76,7 +78,7 @@ export default function Members() {
         </button>
       </div>
 
-      {/* TABLE (scrollable on mobile) */}
+      {/* TABLE */}
       <div className="bg-white rounded-lg shadow overflow-x-auto">
         <table className="min-w-[700px] w-full text-left">
           <thead className="bg-gray-100">
@@ -91,73 +93,42 @@ export default function Members() {
           </thead>
 
           <tbody>
-            {filteredMembers.map((member) => {
-              const statusClasses =
-                member.status === "inactive"
-                  ? "bg-red-100 text-red-700"
-                  : member.daysLeft !== undefined &&
-                    member.daysLeft <= 3
-                  ? "bg-orange-100 text-orange-700"
-                  : member.daysLeft !== undefined &&
-                    member.daysLeft <= 7
-                  ? "bg-yellow-100 text-yellow-700"
-                  : "bg-green-100 text-green-700";
+            {filteredMembers.map((member) => (
+              <tr key={member.id} className="border-t">
+                <td className="p-3">
+                  <Link
+                    to={`/members/${member.id}`}
+                    className="text-orange-600 hover:underline"
+                  >
+                    {member.name}
+                  </Link>
+                </td>
 
-              const statusLabel =
-                member.status === "inactive"
-                  ? "Expired"
-                  : member.daysLeft !== undefined &&
-                    member.daysLeft <= 3
-                  ? `Expiring in ${member.daysLeft} days`
-                  : member.daysLeft !== undefined &&
-                    member.daysLeft <= 7
-                  ? `Expires in ${member.daysLeft} days`
-                  : "Active";
+                <td className="p-3">{member.phone}</td>
+                <td className="p-3">{getPlanName(member.planId)}</td>
 
-              return (
-                <tr key={member.id} className="border-t">
-                  <td className="p-3">
-                    <Link
-                      to={`/members/${member.id}`}
-                      className="text-orange-600 hover:underline"
-                    >
-                      {member.name}
-                    </Link>
-                  </td>
+                <td className="p-3">
+                  <span className="px-2 py-1 rounded text-sm">
+                    {member.status === "inactive"
+                      ? "Expired"
+                      : "Active"}
+                  </span>
+                </td>
 
-                  <td className="p-3">{member.phone}</td>
+                <td className="p-3">{member.expiryDate}</td>
 
-                  <td className="p-3">
-                    {getPlanName(member.planId)}
-                  </td>
-
-                  <td className="p-3">
-                    <span
-                      className={`px-2 py-1 rounded text-sm ${statusClasses}`}
-                    >
-                      {statusLabel}
-                    </span>
-                  </td>
-
-                  <td className="p-3">{member.expiryDate}</td>
-
-                  <td className="p-3">
-                    <button
-                      onClick={() =>
-                        renewMembership(
-                          member.id,
-                          member.planId,
-                          3000
-                        )
-                      }
-                      className="px-3 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 text-sm min-h-[40px]"
-                    >
-                      Renew
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
+                <td className="p-3">
+                  <button
+                    onClick={() =>
+                      renewMembership(member.id, member.planId)
+                    }
+                    className="px-3 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 text-sm min-h-[40px]"
+                  >
+                    Renew
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
