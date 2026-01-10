@@ -8,6 +8,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// routes
 app.use("/members", membersRoutes);
 
 // health check
