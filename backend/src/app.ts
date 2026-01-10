@@ -2,16 +2,16 @@ import express from "express";
 const cors = require("cors");
 
 import membersRoutes from "./routes/members.routes";
+import checkinsRoutes from "./routes/checkins.routes";
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-// routes
 app.use("/members", membersRoutes);
+app.use("/check-ins", checkinsRoutes);
 
-// health check
 app.get("/health", (_req, res) => {
   res.json({ status: "ok" });
 });

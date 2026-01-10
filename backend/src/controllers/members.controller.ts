@@ -54,3 +54,48 @@ export const getMembers = async (_req: Request, res: Response) => {
     });
   }
 };
+
+/**
+ * GET /members/search?q=
+ */
+export const searchMembers = async (req: Request, res: Response) => {
+  try {
+    const query = req.query.q as string;
+
+    if (!query) {
+      return res.status(400).json({
+        error: "Search query is required"
+      });
+    }
+
+    const members = await prisma.member.findMany({
+      where: {
+        OR: [
+          {
+            phone: {
+              contains: query,
+              mode: "insensitive"
+            }
+          },
+          {
+            fullName: {
+              contains: query,
+              mode: "insensitive"
+            }
+          }
+        ]
+      },
+      orderBy: {
+        createdAt: "desc"
+      }
+    });
+
+    return res.json(members);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      error: "Search failed"
+    });
+  }
+};
+
